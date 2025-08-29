@@ -1,0 +1,14 @@
+<Project Sdk="WixToolset.Sdk/4.0.4">
+  <PropertyGroup>
+    <OutputName>PopupGuard</OutputName>
+    <Platform>x64</Platform>
+    <EnableCompression>true</EnableCompression>
+    <Cultures>zh-CN</Cultures>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Product.wxs" />
+  </ItemGroup>
+</Project>
+
+

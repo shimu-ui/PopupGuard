@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="PopupGuard" Language="2052" Version="1.0.0.0" Manufacturer="PopupGuard" UpgradeCode="D5E67D6A-3D1C-4D52-9C1B-7D6AE1D3F2B1" Scope="perMachine">
+    <MajorUpgrade DowngradeErrorMessage="已经安装了更高版本的 PopupGuard。"/>
+    <MediaTemplate />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="ManufacturerFolder" Name="PopupGuard">
+        <Directory Id="INSTALLFOLDER" Name="PopupGuard" />
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ProgramMenuDir" Name="PopupGuard" />
+    </StandardDirectory>
+    <StandardDirectory Id="DesktopFolder" />
+
+    <Icon Id="AppIcon" SourceFile="..\src\App\PopupGuard.ico"/>
+
+    <Component Id="AppExeComponent" Guid="D1D2A3B4-C5D6-47E8-9123-3F9B7A6C5D4E" Directory="INSTALLFOLDER">
+      <File Id="AppExe" Source="..\dist\win-x64-scd\App.exe" KeyPath="yes"/>
+    </Component>
+
+    <Component Id="StartMenuShortcutComponent" Guid="B4CE01D6-2E0E-4C3D-9B21-3C8B6B7E6F10" Directory="ProgramMenuDir">
+      <CreateFolder />
+      <Shortcut Id="StartMenuShortcut" Name="PopupGuard" WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" Advertise="no" Target="[INSTALLFOLDER]App.exe" />
+      <RemoveFolder Id="RemoveProgramMenuDir" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\PopupGuard" Name="StartMenu" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <Component Id="DesktopShortcutComponent" Guid="B98B4F6A-20F8-43D0-9ABE-1B2C0F2F8F77" Directory="DesktopFolder">
+      <CreateFolder />
+      <Shortcut Id="DesktopShortcut" Name="PopupGuard" WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" Advertise="no" Target="[INSTALLFOLDER]App.exe" />
+      <RegistryValue Root="HKCU" Key="Software\PopupGuard" Name="Desktop" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <Feature Id="MainFeature" Title="PopupGuard 主程序" Level="1">
+      <ComponentRef Id="AppExeComponent" />
+      <ComponentRef Id="StartMenuShortcutComponent" />
+      <ComponentRef Id="DesktopShortcutComponent" />
+    </Feature>
+
+    <Property Id="WIXUI_DONTVALIDATEPATH" Value="1"/>
+
+  </Package>
+</Wix>
+
+

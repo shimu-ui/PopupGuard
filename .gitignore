@@ -1,0 +1,24 @@
+# Build
+bin/
+obj/
+dist/
+installer/bin/
+installer/obj/
+
+# VS/IDE
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+**/project.assets.json
+**/project.nuget.cache
+
+# Others
+*.log
+.DS_Store
+Thumbs.db
+.promptx/

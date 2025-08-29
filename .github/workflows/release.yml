@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore PopupGuard.sln
+
+      - name: Build (Release)
+        run: dotnet build PopupGuard.sln -c Release --no-restore
+
+      - name: Publish self-contained (win-x64, single-file)
+        run: >
+          dotnet publish src/App/App.csproj -c Release -r win-x64 --self-contained true
+          /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+          /p:PublishTrimmed=false -o dist/win-x64-scd
+
+      - name: Build MSI (WiX v4)
+        run: dotnet build installer/Installer.wixproj -c Release
+
+      - name: Prepare artifacts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          Compress-Archive -Path dist/win-x64-scd/* -DestinationPath artifacts/PopupGuard-win-x64-scd.zip -Force
+          Copy-Item installer/bin/x64/Release/PopupGuard.msi artifacts/PopupGuard.msi -Force
+          Get-FileHash -Algorithm SHA256 artifacts/PopupGuard.msi | Format-Table -AutoSize | Out-String | Set-Content artifacts/SHA256SUMS.txt
+          Get-FileHash -Algorithm SHA256 artifacts/PopupGuard-win-x64-scd.zip | Format-Table -AutoSize | Out-String | Add-Content artifacts/SHA256SUMS.txt
+
+      - name: Upload artifacts (CI)
+        uses: actions/upload-artifact@v4
+        with:
+          name: PopupGuard-artifacts
+          path: artifacts/*
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/PopupGuard.msi
+            artifacts/PopupGuard-win-x64-scd.zip
+            artifacts/SHA256SUMS.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
