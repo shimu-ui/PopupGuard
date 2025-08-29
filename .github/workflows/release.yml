@@ -42,9 +42,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           New-Item -ItemType Directory -Force -Path artifacts | Out-Null
           Copy-Item installer/bin/x64/Release/PopupGuard.msi artifacts/PopupGuard.msi -Force
-          Get-FileHash -Algorithm SHA256 artifacts/PopupGuard.msi | Format-Table -AutoSize | Out-String | Set-Content artifacts/SHA256SUMS.txt
           Compress-Archive -Path dist/win-x64-fdd/* -DestinationPath artifacts/PopupGuard-win-x64-fdd.zip -Force
-          Get-FileHash -Algorithm SHA256 artifacts/PopupGuard-win-x64-fdd.zip | Format-Table -AutoSize | Out-String | Add-Content artifacts/SHA256SUMS.txt
 
       - name: Upload artifacts (CI)
         uses: actions/upload-artifact@v4
@@ -62,7 +60,6 @@ jobs:
           files: |
             artifacts/PopupGuard.msi
             artifacts/PopupGuard-win-x64-fdd.zip
-            artifacts/SHA256SUMS.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
