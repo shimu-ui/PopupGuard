@@ -1,0 +1,78 @@
+<Window x:Class="PopupGuard.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="设置" Height="520" Width="520" MinHeight="360" MinWidth="420" ResizeMode="CanResize">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- 基本设置 -->
+        <GroupBox Header="基本设置" Margin="0,0,0,16">
+            <StackPanel Margin="8">
+                <CheckBox x:Name="AutoRunCheck" Content="随系统启动" Margin="0,0,0,8"/>
+            </StackPanel>
+        </GroupBox>
+        
+        <!-- 过滤设置 -->
+        <GroupBox Grid.Row="1" Header="弹窗过滤设置" Margin="0,0,0,16">
+            <StackPanel Margin="8">
+                <CheckBox x:Name="FilterOwnProcessCheck" Content="过滤自己的进程（推荐）" 
+                          ToolTip="自动过滤掉PopupGuard自己的窗口事件，避免干扰" 
+                          Margin="0,0,0,8"/>
+                <CheckBox x:Name="EnableSmartFilteringCheck" Content="启用智能过滤" 
+                          ToolTip="过滤系统进程和技术性窗口，减少噪音" 
+                          Margin="0,0,0,8"/>
+                <TextBlock Text="智能过滤说明：" FontWeight="Bold" Margin="0,8,0,4"/>
+                <TextBlock Text="• 自进程过滤：自动过滤掉PopupGuard自己的窗口事件" 
+                           Margin="16,0,0,2" TextWrapping="Wrap"/>
+                <TextBlock Text="• 系统进程过滤：跳过explorer、svchost等系统进程" 
+                           Margin="16,0,0,2" TextWrapping="Wrap"/>
+                <TextBlock Text="• 技术窗口过滤：忽略无标题或技术性窗口" 
+                           Margin="16,0,0,2" TextWrapping="Wrap"/>
+            </StackPanel>
+        </GroupBox>
+        
+        <!-- 性能设置 -->
+        <GroupBox Grid.Row="2" Header="性能设置" Margin="0,0,0,16">
+            <StackPanel Margin="8">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                    <TextBlock Text="性能预设：" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="PerfPresetCombo" Width="180" Margin="8,0,0,0" SelectionChanged="OnPresetChanged">
+                        <ComboBoxItem Content="高性能（最低占用）" Tag="High"/>
+                        <ComboBoxItem Content="均衡（默认）" Tag="Balanced"/>
+                        <ComboBoxItem Content="细节优先（信息更全）" Tag="Detail"/>
+                        <ComboBoxItem Content="自定义" Tag="Custom"/>
+                    </ComboBox>
+                </StackPanel>
+                <CheckBox x:Name="EnableDetailedInfoCheck" Content="启用详细信息（需要WMI，略增CPU）" Margin="0,0,0,8"/>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                    <TextBlock Text="事件节流间隔(ms)：" VerticalAlignment="Center"/>
+                    <TextBox x:Name="MinEventIntervalBox" Width="80" Margin="8,0,0,0" Text="100"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="UI刷新间隔(ms)：" VerticalAlignment="Center"/>
+                    <TextBox x:Name="UiUpdateIntervalBox" Width="80" Margin="8,0,0,0" Text="200"/>
+                </StackPanel>
+                <CheckBox x:Name="EnableIconCacheCheck" Content="启用图标缓存（更低CPU/IO）" Margin="0,8,0,8"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="列表最大行数：" VerticalAlignment="Center"/>
+                    <TextBox x:Name="MaxRowsBox" Width="80" Margin="8,0,0,0" Text="500"/>
+                </StackPanel>
+                <TextBlock Text="说明：高性能 → 低占用；细节优先 → 信息更全但更耗资源。选择预设可自动填充参数。" Margin="0,8,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </GroupBox>
+        
+        <!-- 按钮区域 -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="保存" Margin="0,8,8,0" Click="OnSaveClick" Width="80"/>
+            <Button Content="关闭" Margin="0,8,0,0" Click="OnCloseClick" Width="80"/>
+        </StackPanel>
+    </Grid>
+    </ScrollViewer>
+</Window>
+
