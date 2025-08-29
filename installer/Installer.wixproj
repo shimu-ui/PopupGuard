@@ -4,6 +4,7 @@
     <Platform>x64</Platform>
     <EnableCompression>true</EnableCompression>
     <Cultures>zh-CN</Cultures>
+    <DefineConstants>SourceFddDir=..\dist\win-x64-fdd</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

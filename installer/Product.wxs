@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Package Name="PopupGuard" Language="2052" Version="1.0.0.0" Manufacturer="PopupGuard" UpgradeCode="D5E67D6A-3D1C-4D52-9C1B-7D6AE1D3F2B1" Scope="perMachine">
+  <Package Name="PopupGuard" Language="2052" Version="1.0.2.0" Manufacturer="PopupGuard" UpgradeCode="D5E67D6A-3D1C-4D52-9C1B-7D6AE1D3F2B1" Scope="perMachine">
     <MajorUpgrade DowngradeErrorMessage="已经安装了更高版本的 PopupGuard。"/>
-    <MediaTemplate />
+    <MediaTemplate EmbedCab="yes"/>
 
     <StandardDirectory Id="ProgramFiles64Folder">
       <Directory Id="ManufacturerFolder" Name="PopupGuard">
@@ -17,8 +17,16 @@
 
     <Icon Id="AppIcon" SourceFile="..\src\App\PopupGuard.ico"/>
 
-    <Component Id="AppExeComponent" Guid="D1D2A3B4-C5D6-47E8-9123-3F9B7A6C5D4E" Directory="INSTALLFOLDER">
-      <File Id="AppExe" Source="..\dist\win-x64-scd\App.exe" KeyPath="yes"/>
+    <Component Id="AppFilesComponent" Guid="3B3A0C4B-5C0E-4B63-9B6E-9E7F6D3A2B10" Directory="INSTALLFOLDER">
+      <File Id="AppExe" Source="$(var.SourceFddDir)\App.exe" KeyPath="yes"/>
+      <File Id="AppDll" Source="$(var.SourceFddDir)\App.dll"/>
+      <File Id="CoreDll" Source="$(var.SourceFddDir)\Core.dll"/>
+      <File Id="SystemManagementDll" Source="$(var.SourceFddDir)\System.Management.dll"/>
+      <File Id="Runtimeconfig" Source="$(var.SourceFddDir)\App.runtimeconfig.json"/>
+      <File Id="DepsJson" Source="$(var.SourceFddDir)\App.deps.json"/>
+      <File Id="AppPdb" Source="$(var.SourceFddDir)\App.pdb"/>
+      <File Id="CorePdb" Source="$(var.SourceFddDir)\Core.pdb"/>
+      <File Id="AppIconFile" Source="$(var.SourceFddDir)\PopupGuard.ico"/>
     </Component>
 
     <Component Id="StartMenuShortcutComponent" Guid="B4CE01D6-2E0E-4C3D-9B21-3C8B6B7E6F10" Directory="ProgramMenuDir">
@@ -35,7 +43,7 @@
     </Component>
 
     <Feature Id="MainFeature" Title="PopupGuard 主程序" Level="1">
-      <ComponentRef Id="AppExeComponent" />
+      <ComponentRef Id="AppFilesComponent" />
       <ComponentRef Id="StartMenuShortcutComponent" />
       <ComponentRef Id="DesktopShortcutComponent" />
     </Feature>
