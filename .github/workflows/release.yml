@@ -28,11 +28,10 @@ jobs:
       - name: Build (Release)
         run: dotnet build PopupGuard.sln -c Release --no-restore
 
-      - name: Publish self-contained (win-x64, single-file)
+      - name: Publish framework-dependent (win-x64, FDD)
         run: >
-          dotnet publish src/App/App.csproj -c Release -r win-x64 --self-contained true
-          /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
-          /p:PublishTrimmed=false -o dist/win-x64-scd
+          dotnet publish src/App/App.csproj -c Release -r win-x64 --self-contained false
+          -o dist/win-x64-fdd
 
       - name: Build MSI (WiX v4)
         run: dotnet build installer/Installer.wixproj -c Release
@@ -42,10 +41,10 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           New-Item -ItemType Directory -Force -Path artifacts | Out-Null
-          Compress-Archive -Path dist/win-x64-scd/* -DestinationPath artifacts/PopupGuard-win-x64-scd.zip -Force
           Copy-Item installer/bin/x64/Release/PopupGuard.msi artifacts/PopupGuard.msi -Force
           Get-FileHash -Algorithm SHA256 artifacts/PopupGuard.msi | Format-Table -AutoSize | Out-String | Set-Content artifacts/SHA256SUMS.txt
-          Get-FileHash -Algorithm SHA256 artifacts/PopupGuard-win-x64-scd.zip | Format-Table -AutoSize | Out-String | Add-Content artifacts/SHA256SUMS.txt
+          Compress-Archive -Path dist/win-x64-fdd/* -DestinationPath artifacts/PopupGuard-win-x64-fdd.zip -Force
+          Get-FileHash -Algorithm SHA256 artifacts/PopupGuard-win-x64-fdd.zip | Format-Table -AutoSize | Out-String | Add-Content artifacts/SHA256SUMS.txt
 
       - name: Upload artifacts (CI)
         uses: actions/upload-artifact@v4
@@ -56,9 +55,13 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          body: |
+            解决了无法安装问题。
+            - 切换为框架依赖版安装包（FDD）
+            - 修复 MSI 有效负载未嵌入导致的安装失败
           files: |
             artifacts/PopupGuard.msi
-            artifacts/PopupGuard-win-x64-scd.zip
+            artifacts/PopupGuard-win-x64-fdd.zip
             artifacts/SHA256SUMS.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
